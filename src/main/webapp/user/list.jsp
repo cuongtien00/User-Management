@@ -15,7 +15,11 @@
 </head>
 <body>
 <center>
-    <h1>User Management</h1>
+    <h1><a href="/users">
+        <button class="btn btn-primary">
+            User Management
+        </button>
+    </a></h1>
     <h2>
         <a href="/users?action=create">Add New User</a>
     </h2>
@@ -25,7 +29,8 @@
         <caption><h2 class="text-center">List of Users</h2></caption>
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th><a href="/users?action=sort">Name
+            </a></th>
             <th>Email</th>
             <th>Country</th>
             <th>Actions</th>
@@ -49,18 +54,7 @@
         <input name="action" value="view" hidden>
         <input class="btn btn-primary" type="submit" value="Users List By Country">
     </form>
-    <a href="/users?action=sort">
-        <button class="btn btn-primary">
-            Sort by name
-        </button>
-    </a>
-    <br>
-    <br>
-    <a href="/users">
-        <button class="btn btn-primary">
-            Trang chu
-        </button>
-    </a>
+
 </div>
 
 
