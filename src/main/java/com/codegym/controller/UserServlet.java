@@ -61,6 +61,10 @@ public class UserServlet extends HttpServlet {
                 case "delete":
                     deleteUser(request, response);
                     break;
+                case "view":
+                    showViewCountry(request,response);
+                case "sort":
+                    showViewSort(request,response);
                 default:
                     listUser(request, response);
                     break;
@@ -68,6 +72,35 @@ public class UserServlet extends HttpServlet {
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    private void showViewSort(HttpServletRequest request, HttpServletResponse response) {
+        List<User>users = userDAO.sortByName();
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
+        request.setAttribute("listUser",users);
+        try {
+            dispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void showViewCountry(HttpServletRequest request, HttpServletResponse response) {
+        String country = request.getParameter("country");
+        List<User> users = userDAO.selectUser(country);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
+        request.setAttribute("listUser",users);
+        try {
+            dispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void listUser(HttpServletRequest request, HttpServletResponse response)

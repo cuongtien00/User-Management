@@ -17,7 +17,9 @@ public class UserDAO implements IUserDAO{
 
     private static final String INSERT_USERS_SQL = "INSERT INTO users (name, email, country) VALUES (?, ?, ?);";
     private static final String SELECT_USER_BY_ID = "select id,name,email,country from users where id =?";
+    private static final String SELECT_USER_BY_COUNTRY = "select id,name,email,country from users where country like ?";
     private static final String SELECT_ALL_USERS = "select * from users";
+    private static final String SORT_ALL_USERS_BY_NAME = "select * from users order by name;";
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
 
@@ -39,6 +41,7 @@ public class UserDAO implements IUserDAO{
         return connection;
     }
 
+
     public void insertUser(User user) throws SQLException {
         System.out.println(INSERT_USERS_SQL);
         // try-with-resource statement will auto close the connection.
@@ -52,7 +55,45 @@ public class UserDAO implements IUserDAO{
             printSQLException(e);
         }
     }
+    public List<User> sortByName(){
+        List<User>users = new ArrayList<>();
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(SORT_ALL_USERS_BY_NAME);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                User user = new User(id,name,email,country);
+                users.add(user);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return users;
+    }
+ public List<User> selectUser(String country){
+        List<User> users = new ArrayList<>();
 
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_COUNTRY);
+            statement.setString(1,country);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                 User user = new User(id,name,email,country);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return users;
+ }
     public User selectUser(int id) {
         User user = null;
         // Step 1: Establishing a Connection
