@@ -5,8 +5,17 @@ public class User {
     protected String name;
     protected String email;
     protected String country;
+    private TypeUser typeUser;
 
     public User() {
+    }
+
+    public TypeUser getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(TypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 
     public User(String name, String email, String country) {

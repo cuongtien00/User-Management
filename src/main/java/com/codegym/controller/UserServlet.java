@@ -1,7 +1,11 @@
 package com.codegym.controller;
 
+import com.codegym.IService;
 import com.codegym.dao.UserDAO;
+import com.codegym.model.TypeUser;
 import com.codegym.model.User;
+import com.codegym.typeService.ITypeService;
+import com.codegym.typeService.TypeService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 public class UserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UserDAO userDAO;
+
+    private ITypeService typeService = new TypeService();
 
     public void init() {
         userDAO = new UserDAO();
@@ -37,6 +43,9 @@ public class UserServlet extends HttpServlet {
                 case "edit":
                     updateUser(request, response);
                     break;
+                default:
+                    listUser(request,response);
+                    break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -52,6 +61,10 @@ public class UserServlet extends HttpServlet {
 
         try {
             switch (action) {
+                case "test-without-tran":
+
+                    testWithoutTran(request, response);
+                    break;
                 case "create":
                     showNewForm(request, response);
                     break;
@@ -63,8 +76,15 @@ public class UserServlet extends HttpServlet {
                     break;
                 case "view":
                     showViewCountry(request,response);
+                    break;
                 case "sort":
                     showViewSort(request,response);
+                    break;
+                case "permission":
+
+//                    addUserPermission(request, response);
+
+                    break;
                 default:
                     listUser(request, response);
                     break;
@@ -73,6 +93,12 @@ public class UserServlet extends HttpServlet {
             throw new ServletException(ex);
         }
     }
+
+//    private void addUserPermission(HttpServletRequest request, HttpServletResponse response) {
+//        User user = new User("Maily","mai.ly@gmail.com","tn");
+//        int [] permission = {1,2,4};
+//        userDAO.addUserTransaction(user,permission);
+//    }
 
     private void showViewSort(HttpServletRequest request, HttpServletResponse response) {
         List<User>users = userDAO.sortByName();
@@ -113,6 +139,7 @@ public class UserServlet extends HttpServlet {
 
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("typeList",typeService.selectAllUsers());
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/create.jsp");
         dispatcher.forward(request, response);
     }
@@ -123,7 +150,13 @@ public class UserServlet extends HttpServlet {
         User existingUser = userDAO.getUserById(id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/edit.jsp");
         request.setAttribute("user", existingUser);
+        request.setAttribute("typeList",typeService.selectAllUsers());
         dispatcher.forward(request, response);
+
+    }
+    private void testWithoutTran(HttpServletRequest request, HttpServletResponse response) {
+
+        userDAO.insertUpdateWithoutTransaction();
 
     }
 
@@ -132,7 +165,11 @@ public class UserServlet extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String country = request.getParameter("country");
+        String idS = request.getParameter("type");
+        int id = Integer.parseInt(idS);
+        TypeUser typeUser = typeService.selectUser(id);
         User newUser = new User(name, email, country);
+        newUser.setTypeUser(typeUser);
         userDAO.insertUserStore(newUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/create.jsp");
         dispatcher.forward(request, response);
@@ -144,8 +181,10 @@ public class UserServlet extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String country = request.getParameter("country");
-
+        int type_id = Integer.parseInt(request.getParameter("type"));
+        TypeUser typeUser = typeService.selectUser(type_id);
         User book = new User(id, name, email, country);
+        book.setTypeUser(typeUser);
         userDAO.updateUser(book);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/edit.jsp");
         dispatcher.forward(request, response);

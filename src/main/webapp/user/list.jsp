@@ -33,6 +33,7 @@
             </a></th>
             <th>Email</th>
             <th>Country</th>
+            <th>Type</th>
             <th>Actions</th>
         </tr>
         <c:forEach var="user" items="${listUser}">
@@ -41,6 +42,7 @@
                 <td><c:out value="${user.name}"/></td>
                 <td><c:out value="${user.email}"/></td>
                 <td><c:out value="${user.country}"/></td>
+                <td><c:out value="${user.getTypeUser().name}"/></td>
                 <td>
                     <a href="/users?action=edit&id=${user.id}">Edit</a>
                     <a href="/users?action=delete&id=${user.id}">Delete</a>
