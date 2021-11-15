@@ -14,5 +14,7 @@ public interface IUserDAO extends IService<User> {
     void addUserTransaction(User user, int[] permission);
     public List<User> sortByName();
     public void insertUpdateWithoutTransaction();
+    public void insertUpdateUseTransaction();
+
 
 }

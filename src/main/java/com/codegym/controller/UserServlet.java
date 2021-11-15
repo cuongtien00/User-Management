@@ -61,6 +61,10 @@ public class UserServlet extends HttpServlet {
 
         try {
             switch (action) {
+                case "test-use-tran":
+
+                    testUseTran(request, response);
+                    break;
                 case "test-without-tran":
 
                     testWithoutTran(request, response);
@@ -93,7 +97,11 @@ public class UserServlet extends HttpServlet {
             throw new ServletException(ex);
         }
     }
+    private void testUseTran(HttpServletRequest request, HttpServletResponse response) {
 
+        userDAO.insertUpdateUseTransaction();
+
+    }
 //    private void addUserPermission(HttpServletRequest request, HttpServletResponse response) {
 //        User user = new User("Maily","mai.ly@gmail.com","tn");
 //        int [] permission = {1,2,4};
